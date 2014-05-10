@@ -1,15 +1,16 @@
 /* node-aligned-buffer (C) 2012 Ian Babrou <ibobrik@gmail.com>  */
 
 #include <node_buffer.h>
+#include <malloc.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <errno.h>
 
 using namespace v8;
 using namespace node;
 
 void free_aligned_buffer(char * data, void *hint) {
-    free(data);
+    _aligned_free(data);
 }
 
 Handle<Value> ThrowNodeError(const char* what = NULL) {
@@ -28,14 +29,9 @@ Handle<Value> buffer(const Arguments &args) {
     size_t alignment = (size_t) args[0]->ToNumber()->Value();
     size_t size      = (size_t) args[1]->ToNumber()->Value();
 
-    void *buf;
-    int result = posix_memalign(&buf, alignment, size);
+    void *buf = _aligned_malloc(alignment, size);
 
-    if (result == EINVAL) {
-        return ThrowNodeError("Incorrect alignment and size specified");
-    }
-
-    if (result == ENOMEM) {
+    if (buf == 0) {
         return ThrowNodeError("Not enough memory to allocate aligned buffer");
     }
 

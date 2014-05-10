@@ -12,11 +12,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/bobrik/node-aligned-buffer.git"
+    "url": "git://github.com/jurgenk/aligned-buffer-win"
   },
   "keywords": [
     "buffer",
-    "posix_memalign",
     "memalign",
     "alignment",
     "fs",
